@@ -1,0 +1,142 @@
+<!doctype html>
+<!--
+Bittle Javascript Page
+
+To do, bugs:
+   move moveit() one-time items into setup();
+   Run behavior repeat frames
+   Slider for animation speed?
+   Drag image parts directly?
+   Add block for console commands like block for animation?
+   Squash other bugs?
+
+MIT License
+
+Copyright (c) 2022 David Schooler
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+<head>
+<title>Bittle Angle Animation</title>
+<link rel="stylesheet" type="text/css" href="styles.css">
+<script language="javascript" src="bittle.js"></script>
+</head>
+<body onload="setup();">
+
+<h1>Bittle Angle Animation <span style="font-size:small;" id="version"></span><span id="warning1"></span><span id="warning2"></span><span id="warning3"></span><span id="warning4"></span></h1>
+
+<table><tr><td valign="top">
+<table cellpadding="5" cellspacing="0" border="0">
+	<tr><td>Servo&nbsp;&nbsp;&nbsp;8</td><td>Left Front Top angle:</td><td width="475"><input size="2" type="text" id="LfrontTopAngle" value="0" onchange="moveit();"><span class="slidecontainer">&nbsp;&nbsp;&nbsp;<span id="LftSliderMin" style="font-size:70%; color:#606060;"></span><input tabindex="94" type="range" min="0" max="360" value="0" class="slider" id="LftSlider" onchange="slider();"></span><span id="LftSliderMax" style="font-size:70%; color:#606060;"></span></td></tr>
+   <tr><td>Servo 12</td><td>Left Front Bottom angle:&nbsp;&nbsp;</td><td><input size="2" type="text" id="LfrontBotAngle" value="0" onchange="moveit();"><span class="slidecontainer">&nbsp;&nbsp;&nbsp;<span id="LfbSliderMin" style="font-size:70%; color:#606060;"></span><input tabindex="93" type="range" min="0" max="360" value="0" class="slider" id="LfbSlider" onchange="slider();"></span><span id="LfbSliderMax" style="font-size:70%; color:#606060;"></span></td></tr>
+   <tr><td>Servo 11</td><td>Left Back Top angle:</td><td><input size="2" type="text" id="LbackTopAngle" value="0" onchange="moveit();"><span class="slidecontainer">&nbsp;&nbsp;&nbsp;<span id="LbtSliderMin" style="font-size:70%; color:#606060;"></span><input tabindex="92" type="range" min="0" max="360" value="0" class="slider" id="LbtSlider" onchange="slider();"></span><span id="LbtSliderMax" style="font-size:70%; color:#606060;"></span></td></tr>
+   <tr height="20px"><td>Servo 15</td><td>Left Back Bottom angle:</td><td><input size="2" type="text" id="LbackBotAngle" value="0" onchange="moveit();"><span class="slidecontainer">&nbsp;&nbsp;&nbsp;<span id="LbbSliderMin" style="font-size:70%; color:#606060;"></span><input tabindex="91" type="range" min="0" max="360" value="0" class="slider" id="LbbSlider" onchange="slider();"></span><span id="LbbSliderMax" style="font-size:70%; color:#606060;"></span></td></tr>
+
+   <tr height="20px"><td>Servo&nbsp;&nbsp;&nbsp;9</td><td>Right Front Top angle:</td><td width="400"><input size="2" type="text" id="RfrontTopAngle" value="0" onchange="moveit();"><span class="slidecontainer">&nbsp;&nbsp;&nbsp;<span id="RftSliderMin" style="font-size:70%; color:#606060;"></span><input tabindex="94" type="range" min="0" max="360" value="0" class="slider" id="RftSlider" onchange="slider();"></span><span id="RftSliderMax" style="font-size:70%; color:#606060;"></span></td></tr>
+   <tr height="20px"><td>Servo 13</td><td>Right&nbsp;Front&nbsp;Bottom&nbsp;angle:&nbsp;&nbsp;</td><td><input size="2" type="text" id="RfrontBotAngle" value="0" onchange="moveit();"><span class="slidecontainer">&nbsp;&nbsp;&nbsp;<span id="RfbSliderMin" style="font-size:70%; color:#606060;"></span><input tabindex="93" type="range" min="0" max="360" value="0" class="slider" id="RfbSlider" onchange="slider();"></span><span id="RfbSliderMax" style="font-size:70%; color:#606060;"></span></td></tr>
+   <tr height="20px"><td>Servo 10</td><td>Right Back Top angle:</td><td><input size="2" type="text" id="RbackTopAngle" value="0" onchange="moveit();"><span class="slidecontainer">&nbsp;&nbsp;&nbsp;<span id="RbtSliderMin" style="font-size:70%; color:#606060;"></span><input tabindex="92" type="range" min="0" max="360" value="0" class="slider" id="RbtSlider" onchange="slider();"></span><span id="RbtSliderMax" style="font-size:70%; color:#606060;"></span></td></tr>
+   <tr height="20px"><td>Servo 14</td><td>Right Back Bottom angle:</td><td><input size="2" type="text" id="RbackBotAngle" value="0" onchange="moveit();"><span class="slidecontainer">&nbsp;&nbsp;&nbsp;<span id="RbbSliderMin" style="font-size:70%; color:#606060;"></span><input tabindex="91" type="range" min="0" max="360" value="0" class="slider" id="RbbSlider" onchange="slider();"></span><span id="RbbSliderMax" style="font-size:70%; color:#606060;"></span></td></tr>
+   <tr height="20px"><td colspan="2"></td><td colspan="2"><span id="balanceDistance"></span></td></tr>
+   <tr height="20px"><td colspan="2">Animation speed (ms pause):</td><td><input size="2" type="text" value="1000" id="sleepTime"></td></tr>
+   <tr height="20px"><td colspan="2">Display:</td><td><input type="checkbox" id="DisplayPivots" value="Pivots" onchange="moveit();">Pivots&nbsp;&nbsp;&nbsp;<input type="checkbox" id="DisplayGrid" value="Grid" onchange="moveit();">Grid&nbsp;&nbsp;&nbsp;<input type="checkbox" id="DisplaySurfaces" value="Surfaces" onchange="moveit();">Surfaces<span hidden="true">&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="DisplaySeparateSides" value="DisplaySeparateSides" onchange="moveRightSide();">Separate Sides</span>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="DisplayCanvas" value="DisplayCanvas" onchange="moveit();">Foot connections</td></tr>
+   <tr height="20px"><td colspan="2">Bittle console command:</td><td><span id="bittleCommand" style="background:#f8f8c8;"></span></td></tr>
+   <tr height="20px"><td colspan="2">Bittle instinct line:</td><td nowrap><span id="instinct" style="background:#f8d8f8;"></span></td></tr>
+   <tr height="20px"><td colspan="2"></td><td><span title=" Add the currently showing position to the skill box "><button id="saveButton" onclick="save();">Save one line</button></span></td></tr>
+   <tr height="55px"><td colspan="2"><span id="step"></span></td><td><span title=" Run the steps in the skill box "><button id="loopButton" onclick="loop();">Run</button></span> <input id="loopCount" type="text" value="1" size="1"></input> time(s)</td></tr>
+   <tr height="20px"><td colspan="2">Behavior repeat (not implemented):</td><td><span id="behaviorRepeats"><input type="text" id="behaviorFirst" size="1" value="0" disabled="disabled"></input> - <input type="text" id="behaviorLast" size="1" value="0" disabled="disabled"></input> x <input type="text" id="behaviorMult" size="1" value="0" disabled="disabled"></input></span></td></tr>
+   <tr><td colspan="2">&nbsp;&nbsp;&nbsp;<span id="RightSidePos" style="font-size:70%; color:#606060;"><input tabindex="90" type="range" min="0" max="400" value="0" class="slider" id="RightBodySlider" onchange="bodySlider();"></span></td></tr>
+   <tr height="20px"><td colspan="2"><a href="https://bittle.petoi.com/9-teach-bittle-new-skills" target="_blank">Bittle Skills Documentation</a></td></tr>
+</table>
+</td><td valign="top" rowspan="20" colspan="2">
+<form id="skillFormTag">Skill Type: <span id="gaitRadio" style="background:#ffefef;" title=" A gait repeats forever (i.e. Walk) "><input tabindex="97" type="radio" id="gaitSkill" value="gait" name="skill" checked="checked" onchange="changeSkill('gait');">Gait&nbsp;&nbsp;&nbsp;</span><span id="postureRadio" style="background:#efffef;" title=" A posture moves directly to a position (i.e. Sit) "><input tabindex="96" type="radio" id="postureSkill" value="posture" name="skill" onchange="changeSkill('posture');">Posture&nbsp;&nbsp;&nbsp;</span><span id="behaviorRadio" style="background:#efefff;" title=" A behavior moves with an optional repeating section (i.e. Pee) "><input tabindex="95" type="radio" id="behaviorSkill" value="behavior" name="skill" onchange="changeSkill('behavior');">Behavior&nbsp;&nbsp;&nbsp;</span></form><span id="skillType"></span><br>
+<span title=" Open the text below for editing "><button id="editAnimation" value="Edit" type="button" onclick="editAnimation();">Edit</button></span>&nbsp;&nbsp;&nbsp;&nbsp;<button id="saveAnimation" value="Save" type="button" onclick="saveAnimation();" disabled="true">Save</button>&nbsp;&nbsp;&nbsp;&nbsp;<button id="cancelAnimation" value="Cancel" type="button" onclick="cancelAnimation();" disabled="true">Cancel</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span title=" Paste in some demo code to run and/or edit "><button id="demo" value="Demo" type="button" onclick="demo();">Demo</button></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span title=" Insert an intermediary line between each existing line (doubling the size of the skill) "><button id="smooth" value="Smooth" type="button" onclick="smooth();">Smooth</button></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span title=" Copy below to clipboard (for pasting into Instinct file) "><button id="copy" value="Copy" type="button" onclick="copyAnimation();">Copy</button></span><br>
+<!-- table><tr><td width="400" style="border:1px solid #000040;" rowspan="20" valign="top"><div contentEditable="true" tabindex="99" id="animation" style="font-size:70%;" oninput="animationEdit();"></div></td></tr></table -->
+<table border="1" style="display:block; height:500px;overflow:auto;"><tr valign="top"><td><div id="select" style="font-size:70%;"></div></td><td width="100%" style="border:1px solid #000040;" rowspan="20" colspan="2" valign="top"><div id="animation" style="font-size:70%; background:#ffefef;"></div></td></tr></table>
+<br><label for="inputFile">Load Instinct File: </label><input type="file" id="inputFile" value="Load Instinct File"/>&nbsp;&nbsp;<span id="instinctList" hidden="true"><select onchange="readInstinct();" name="instinctFromFile" id="instinctFromFile"></select></span>
+</td></tr></table>
+
+<div id="wholeImage">
+<img class="BittleImage" id="LBittleBody" style="position:absolute; left:500px; top: 400px;z-index:18;" src="BittleBody.png"><br>
+<div style="position:absolute;left:500px;top:750px;z-index:25;" id="LSideName"><span style="color:blue;font-weight:bold;">&lt; Front&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Left&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Back &gt;</span></div>
+<img class="BittleImage" id="RBittleBody" style="position:absolute; left:900px; top: 400px;z-index:17; filter:brightness(70%);" src="BittleBody.png"><br>
+<div style="position:absolute;left:1150px;top:750px;z-index:17;" id="RSideName"><span style="color:blue;font-weight:bold;">&lt; Front&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Right&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Back &gt;</span></div>
+<img class="BittleImage" id="LFrontTop" style="position:absolute; left:508px; top:454px;z-index:19;" src="BittleFrontTop.png"><br>
+<img class="BittleImage" id="LFrontBottom" style="position:absolute; left: 369px; top:610px;z-index:20;" src="BittleFrontBottom.png"><br>
+<img class="BittleImage" id="LBackTop" style="position:absolute; left:931px; top:452px;z-index:19;" src="BittleFrontTop.png"><br>
+<img class="BittleImage" id="LBackBottom" style="position:absolute; left: 793px; top:607px;z-index:20;" src="BittleFrontBottom.png"><br>
+<img class="BittleImage" id="RFrontTop" style="position:absolute; left:908px; top:454px;z-index:16;filter:brightness(50%)" src="BittleFrontTop.png"><br>
+<img class="BittleImage" id="RFrontBottom" style="position:absolute; left: 769px; top:610px;z-index:15;filter:brightness(50%)" src="BittleFrontBottom.png"><br>
+<img class="BittleImage" id="RBackTop" style="position:absolute; left:1331px; top:452px;z-index:16;filter:brightness(50%)" src="BittleFrontTop.png"><br>
+<img class="BittleImage" id="RBackBottom" style="position:absolute; left:1193px; top:807px;z-index:15;filter:brightness(50%)" src="BittleFrontBottom.png"><br>
+<div id="topLine" hidden="false">
+<img id="topRedLine" src="redline.png" width="100%" height="1" style="position:absolute; left: 0px; top:688px;z-index:1;">
+</div>
+<div id="bottomline" hidden="false">
+<img id="botRedLine" src="redline.png" width="100%" height="1" style="position:absolute; left: 0px; top:810px;z-index:1;">
+</div>
+<div id="graylines"></div>
+
+<div id="pivotDots" hidden="false">
+<img id="LfrontTopPivot"    style="position:absolute; left:534px; top:482px;z-index:20;" src="reddot.png">
+<img id="LfrontBottomPivot" style="position:absolute; left:530px; top:648px;z-index:21;" src="reddot.png">
+<img id="LbackTopPivot"     style="position:absolute; left:957px; top:482px;z-index:20;" src="reddot.png">
+<img id="LbackBottomPivot"  style="position:absolute; left:730px; top:648px;z-index:21;" src="reddot.png">
+<img id="LnewFrontPivot"    style="position:absolute; left:10px;  top:10px;z-index:21;"  src="bluedot.png">
+<img id="LnewBackPivot"     style="position:absolute; left:10px;  top:10px;z-index:21;"  src="bluedot.png">
+<img id="LfrontFootPivot"   style="position:absolute; left:50px;  top:10px;"  src="greendot.png">
+<img id="LbackFootPivot"    style="position:absolute; left:50px;  top:10px;"  src="greendot.png">
+
+<img id="RfrontTopPivot"    style="position:absolute; left:900px;  top:775px;z-index:17;" src="reddot.png">
+<img id="RfrontBottomPivot" style="position:absolute; left:900px;  top:940px;z-index:17;" src="reddot.png">
+<img id="RbackTopPivot"     style="position:absolute; left:1200px; top:775px;z-index:17;" src="reddot.png">
+<img id="RbackBottomPivot"  style="position:absolute; left:1200px; top:920px;z-index:17;" src="reddot.png">
+
+<!-- Blue dots on back are broken -->
+<img id="RnewFrontPivot"    style="position:absolute; left:10px;  top:10px;"  src="bluedot.png">
+<img id="RnewBackPivot"     style="position:absolute; left:10px;  top:10px;"  src="bluedot.png">
+<img id="RfrontFootPivot"   style="position:absolute; left:50px;  top:10px;"  src="greendot.png">
+<img id="RbackFootPivot"    style="position:absolute; left:50px;  top:10px;"  src="greendot.png">
+</div>
+</div>
+
+<canvas id="canvas" width="1500" height="1500" style="position:absolute;left:0;top:800px;"></canvas>
+
+
+<!--
+<svg height="200" width="100">
+	<line id="footline" x1="0" y1="0" x2="100" y2="100" style="stroke:rgb(255,0,0);stroke-width:2" />
+</svg>
+-->
+
+<!-- Test walk gait (paste into textarea):
+12, 0, 0, 0,
+-30, 0, 0, 30, 55, 0, 0, -7,
+-20, 0, 0, 40, 40, 0, 0, -10,
+-10, 0, 0, 50, 27, 0, 0, -12,
+0, 0, 0, 50, 15, 0, 0, -12,
+10, 0, 0, -30, 5, 0, 0, 5,
+20, 0, 0, -30, 0, 0, 0, 55,
+30, 0, 0, -30, -7, 0, 0, 55,
+40, 0, 0, -20, -10, 0, 0, 40,
+50, 0, 0, -10, -12, 0, 0, 27,
+50, 0, 0, 0, -20, 0, 0, 15,
+-30, 0, 0, 10, 0, 0, 0, 5,
+-30, 0, 0, 20, 55, 0, 0, 0,
+-->
+</body></html>
