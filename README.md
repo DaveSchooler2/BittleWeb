@@ -1,7 +1,7 @@
 # BittleWeb
 
 ![Screenshot](ScreenShot.png)
-This is a Javascript web page (no server-side code) for creating and running Bittle instincts (gaits, behaviors, and postures). <a href="https://www.petoi.com/pages/bittle-open-source-bionic-robot-dog" target="_blank">Bittle is a robot dog</a> that can be programed via the Arduino IDE, Python, etc., with endless posibilities. Using this web page allows for quicker editing of instincts to be sent to Bittle for execution.
+This is a Javascript web page (no server-side code) for creating and running Bittle instincts (gaits, behaviors, and postures). Simply download, unzip, then open with your web browser. You can also see it in action at <a href="http://schooler.net/bittle/" target="_blank">this site</a>. <a href="https://www.petoi.com/pages/bittle-open-source-bionic-robot-dog" target="_blank">Bittle is a robot dog</a> that can be programed via the Arduino IDE, Python, etc., with endless posibilities. Using this web page allows for quicker editing of instincts to be sent to Bittle for execution.
 
 To create a new instinct:
    Position the 8 servos
